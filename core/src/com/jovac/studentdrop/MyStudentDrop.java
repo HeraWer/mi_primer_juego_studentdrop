@@ -8,6 +8,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -20,15 +21,18 @@ import java.util.Iterator;
 public class MyStudentDrop extends ApplicationAdapter {
 	private Texture dropImage;
 	private Texture bucketImage;
-	private Sound dropSound;
+	private Sound dropSound, gameOver;
 	private Music rainMusic;
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Rectangle bucket;
 	private Array<Rectangle> raindrops;
 	private long lastDropTime;
-	private int contador;
+	private int countSpeed;
 	private double speed = 200;
+	private BitmapFont font;
+	private int countPoints;
+	private int lifes = 0;
 	
 	@Override
 	public void create () {
@@ -43,6 +47,13 @@ public class MyStudentDrop extends ApplicationAdapter {
 		*/
 		dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
 		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+		gameOver = Gdx.audio.newSound(Gdx.files.internal("gameOver.mp3"));
+
+		/*
+
+		 */
+		font = new BitmapFont(Gdx.files.internal("ravie.fnt"), Gdx.files.internal("ravie.png"), false);
+		countPoints = 0;
 
 		/*
 		   Seteamos la musica del rain, al ponre setLooping hacemos que se reproduzca continuamente
@@ -74,6 +85,8 @@ public class MyStudentDrop extends ApplicationAdapter {
 		bucket.width = 64;
 		bucket.height = 64;
 
+
+
 		/*
 
 		 */
@@ -102,7 +115,10 @@ public class MyStudentDrop extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		batch.draw(bucketImage, bucket.x, bucket.y);
+		font.draw(batch, "Points: " + countPoints, 550, 475);
 		batch.end();
+
+
 
 		/*
 			Este metodo mueve el cubo cuando presionas sobre la pantalla con el raton.
@@ -140,20 +156,28 @@ public class MyStudentDrop extends ApplicationAdapter {
 			/*
 				Si se cae fuera se borra, es decir el final de la camara de y
 			 */
-			if(raindrop.y + 64 < 0) iter.remove();
+			if(raindrop.y + 64 < 0){
+				gameOver.play();
+				iter.remove();
+			}
+
+			if(lifes > 0){
+
+			}
 
 			/*
 				Si la gota cae dentro del cubo hace el sonido y se borra
 			 */
 			if(raindrop.overlaps(bucket)) {
 				dropSound.play();
-				contador = contador + 1;
+				countSpeed = countSpeed + 1;
+				countPoints = countPoints  + 1;
 				iter.remove();
 			}
 
-			if(contador == 10){
+			if(countSpeed == 10){
 				speed = speed * 1.5;
-				contador = 0;
+				countSpeed = 0;
 			}
 		}
 
