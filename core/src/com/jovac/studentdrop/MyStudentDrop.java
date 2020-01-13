@@ -3,6 +3,7 @@ package com.jovac.studentdrop;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,7 +19,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Iterator;
 
-public class MyStudentDrop extends ApplicationAdapter {
+public class MyStudentDrop implements Screen {
 	private Texture dropImage;
 	private Texture bucketImage;
 	private Sound dropSound, gameOver;
@@ -33,9 +34,9 @@ public class MyStudentDrop extends ApplicationAdapter {
 	private BitmapFont font;
 	private int countPoints;
 	private int lifes = 0;
-	
-	@Override
-	public void create () {
+
+	public MyStudentDrop(MainGame game) {
+
 		/*
 			Cargamos los assets que hemos guardado como una nueva textura.
 		*/
@@ -96,7 +97,7 @@ public class MyStudentDrop extends ApplicationAdapter {
 	}
 
 	@Override
-	public void render () {
+	public void render (float delta) {
 
 		/*
 			Color de fondo del juego
@@ -190,6 +191,30 @@ public class MyStudentDrop extends ApplicationAdapter {
 		}
 		batch.end();
 
+	}
+
+	@Override
+	public void show() {
+		// start the playback of the background music
+		// when the screen is shown
+		rainMusic.play();
+	}
+
+
+	@Override
+	public void hide() {
+	}
+
+	@Override
+	public void pause() {
+	}
+
+	@Override
+	public void resume() {
+	}
+
+	@Override
+	public void resize(int width, int height) {
 	}
 	
 	@Override

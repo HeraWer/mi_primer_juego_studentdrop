@@ -2,7 +2,7 @@ package com.jovac.studentdrop.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.jovac.studentdrop.MyStudentDrop;
+import com.jovac.studentdrop.MainGame;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -10,6 +10,6 @@ public class DesktopLauncher {
 		config.title =  " Drop " ;
 		config.width=  800 ;
 		config.height =  480 ;
-		new LwjglApplication(new MyStudentDrop(), config);
+		new LwjglApplication(new MainGame(), config);
 	}
 }
