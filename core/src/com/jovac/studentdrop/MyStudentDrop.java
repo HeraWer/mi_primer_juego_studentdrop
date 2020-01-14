@@ -22,7 +22,7 @@ public class MyStudentDrop implements Screen {
 
 	MainGame game;
 
-	private Texture dropImage;
+	private Texture dropImage, dropImageGolden, wallpaperRain;
 	private Texture bucketImage;
 
 	private Sound dropSound, gameOver;
@@ -32,13 +32,14 @@ public class MyStudentDrop implements Screen {
 	private OrthographicCamera camera;
 
 	private Rectangle bucket;
-	private Array<Rectangle> raindrops;
+	private Array<Rectangle> raindrops, raindropsGolden;
 	private long lastDropTime;
 
 	private int countSpeed;
 	private double speed = 200;
 	static int countPoints;
 	private int lifes = 0;
+	private Double respawnGold;
 
 
 
@@ -52,7 +53,9 @@ public class MyStudentDrop implements Screen {
 			Cargamos los assets que hemos guardado como una nueva textura.
 		*/
 		dropImage = new Texture(Gdx.files.internal("droplet.png"));
+		dropImageGolden = new Texture(Gdx.files.internal("dropletGolden.png"));
 		bucketImage = new Texture(Gdx.files.internal("bucket.png"));
+		wallpaperRain = new Texture(Gdx.files.internal("wallpaperLluvia.jpg"));
 
 		/*
 			Cargamos los sonidos y la musica.
@@ -105,6 +108,7 @@ public class MyStudentDrop implements Screen {
 			Le añade un rectanculo a la gota
 		 */
 		raindrops = new Array<Rectangle>();
+		raindropsGolden = new Array<Rectangle>();
 		spawnRaindrop();
 	}
 
@@ -127,6 +131,7 @@ public class MyStudentDrop implements Screen {
 		 */
 		game.batch.setProjectionMatrix(camera.combined);
 		game.batch.begin();
+		game.batch.draw(wallpaperRain, 0, 0);
 		game.batch.draw(bucketImage, bucket.x, bucket.y);
 		font.draw(game.batch, "Points: " + countPoints, 0, 480);
 		font.draw(game.batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 625, 480);
@@ -176,10 +181,6 @@ public class MyStudentDrop implements Screen {
 				game.setScreen(new GameOverScreen(game));
 			}
 
-			if(lifes > 0){
-
-			}
-
 			/*
 				Si la gota cae dentro del cubo hace el sonido y se borra
 				 mira que si la gota esta mas baja que la altura del cubo no cogera la gota
@@ -198,11 +199,41 @@ public class MyStudentDrop implements Screen {
 		}
 
 		/*
+			For para que la gota se mueva hacia abajo y si llega la parte de abajo se borra
+		 */
+		for (Iterator<Rectangle> iterGolden = raindropsGolden.iterator(); iterGolden.hasNext(); ) {
+			Rectangle raindropGolden = iterGolden.next();
+			raindropGolden.y -= speed * Gdx.graphics.getDeltaTime();
+			/*
+				Si se cae fuera se borra, es decir el final de la camara de y
+			 */
+			if(raindropGolden.y + 64 < 0){
+				gameOver.play();
+				iterGolden.remove();
+				game.setScreen(new GameOverScreen(game));
+			}
+
+			/*
+				Si la gota cae dentro del cubo hace el sonido y se borra
+				 mira que si la gota esta mas baja que la altura del cubo no cogera la gota
+			 */
+			if(raindropGolden.overlaps(bucket) && raindropGolden.y >= 70) {
+				dropSound.play();
+				countSpeed = countSpeed - 2;
+				countPoints = countPoints  + 10;
+				iterGolden.remove();
+			}
+		}
+
+		/*
 			Aqui es para que se vea la gota definida en el metodo private spawnRaindrop
 		 */
 		game.batch.begin();
 		for(Rectangle raindrop: raindrops) {
 			game.batch.draw(dropImage, raindrop.x, raindrop.y);
+		}
+		for(Rectangle raindropGolden: raindropsGolden) {
+			game.batch.draw(dropImageGolden, raindropGolden.x, raindropGolden.y);
 		}
 		game.batch.end();
 
@@ -238,11 +269,19 @@ public class MyStudentDrop implements Screen {
 	 */
 	private void spawnRaindrop() {
 		Rectangle raindrop = new Rectangle();
+		Rectangle raindropGolden = new Rectangle();
 		raindrop.x = MathUtils.random(0, 800-64);
 		raindrop.y = 480;
 		raindrop.width = 64;
 		raindrop.height = 64;
-		raindrops.add(raindrop);
+		respawnGold = Math.random() * 100;
+
+		if(respawnGold < 5){
+			raindropsGolden.add(raindrop);
+		}else {
+			raindrops.add(raindrop);
+		}
+
 		lastDropTime = TimeUtils.nanoTime();
 	}
 }
