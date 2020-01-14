@@ -69,8 +69,9 @@ public class GameOverScreen implements Screen {
             Printo  las texturas y fuentes en el batch
          */
         game.batch.draw(wallpaperGameOver, 0, -400);
-        font.draw(game.batch, "Has perdut... ", 50, 450);
+        font.draw(game.batch, "Has perdut... ", 10, 450);
         font.draw(game.batch, "Tornar a començar?", 350, 350);
+        font.draw(game.batch, "Puntacion: " + MyStudentDrop.countPoints, 10, 300);
         photoGameOverRestart.draw(game.batch);
 
         /*

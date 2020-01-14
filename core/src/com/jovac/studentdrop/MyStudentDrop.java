@@ -37,7 +37,7 @@ public class MyStudentDrop implements Screen {
 
 	private int countSpeed;
 	private double speed = 200;
-	private int countPoints;
+	static int countPoints;
 	private int lifes = 0;
 
 
