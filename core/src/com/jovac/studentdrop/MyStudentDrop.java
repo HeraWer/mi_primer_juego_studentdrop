@@ -1,6 +1,5 @@
 package com.jovac.studentdrop;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -20,23 +19,35 @@ import com.badlogic.gdx.utils.TimeUtils;
 import java.util.Iterator;
 
 public class MyStudentDrop implements Screen {
+
+	MainGame game;
+
 	private Texture dropImage;
 	private Texture bucketImage;
+
 	private Sound dropSound, gameOver;
 	private Music rainMusic;
+	private BitmapFont font;
+
 	private OrthographicCamera camera;
-	private SpriteBatch batch;
+
 	private Rectangle bucket;
 	private Array<Rectangle> raindrops;
 	private long lastDropTime;
+
 	private int countSpeed;
 	private double speed = 200;
-	private BitmapFont font;
 	private int countPoints;
 	private int lifes = 0;
 
-	public MyStudentDrop(MainGame game) {
 
+
+	public MyStudentDrop(MainGame game) {
+		this.game = game;
+	}
+
+	@Override
+	public void show() {
 		/*
 			Cargamos los assets que hemos guardado como una nueva textura.
 		*/
@@ -51,7 +62,7 @@ public class MyStudentDrop implements Screen {
 		gameOver = Gdx.audio.newSound(Gdx.files.internal("gameOver.mp3"));
 
 		/*
-
+			Cargamos el archivo que contiene la fuente, es una imagen y el formato de la fuente
 		 */
 		font = new BitmapFont(Gdx.files.internal("ravie.fnt"), Gdx.files.internal("ravie.png"), false);
 		countPoints = 0;
@@ -74,7 +85,7 @@ public class MyStudentDrop implements Screen {
 		/*
 			Hago un SpritBatch para poder poner los objetos en este caso el cubo donde quiero que este.
 		 */
-		batch = new SpriteBatch();
+		game.batch = new SpriteBatch();
 
 		/*
 			Creo un rectangulo de la foto del cubo le pongo posicion donde debe estar
@@ -86,14 +97,15 @@ public class MyStudentDrop implements Screen {
 		bucket.width = 64;
 		bucket.height = 64;
 
-
+		// start the playback of the background music
+		// when the screen is shown
+		rainMusic.play();
 
 		/*
-
+			Le añade un rectanculo a la gota
 		 */
 		raindrops = new Array<Rectangle>();
 		spawnRaindrop();
-
 	}
 
 	@Override
@@ -113,11 +125,12 @@ public class MyStudentDrop implements Screen {
 		/*
 			Renderizo los sprits de la camara y el sprite del Bucket con su Bucket x, y
 		 */
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		batch.draw(bucketImage, bucket.x, bucket.y);
-		font.draw(batch, "Points: " + countPoints, 550, 475);
-		batch.end();
+		game.batch.setProjectionMatrix(camera.combined);
+		game.batch.begin();
+		game.batch.draw(bucketImage, bucket.x, bucket.y);
+		font.draw(game.batch, "Points: " + countPoints, 0, 480);
+		font.draw(game.batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 625, 480);
+		game.batch.end();
 
 
 
@@ -160,6 +173,7 @@ public class MyStudentDrop implements Screen {
 			if(raindrop.y + 64 < 0){
 				gameOver.play();
 				iter.remove();
+				game.setScreen(new GameOverScreen(game));
 			}
 
 			if(lifes > 0){
@@ -168,8 +182,9 @@ public class MyStudentDrop implements Screen {
 
 			/*
 				Si la gota cae dentro del cubo hace el sonido y se borra
+				 mira que si la gota esta mas baja que la altura del cubo no cogera la gota
 			 */
-			if(raindrop.overlaps(bucket)) {
+			if(raindrop.overlaps(bucket) && raindrop.y >= 70) {
 				dropSound.play();
 				countSpeed = countSpeed + 1;
 				countPoints = countPoints  + 1;
@@ -185,21 +200,13 @@ public class MyStudentDrop implements Screen {
 		/*
 			Aqui es para que se vea la gota definida en el metodo private spawnRaindrop
 		 */
-		batch.begin();
+		game.batch.begin();
 		for(Rectangle raindrop: raindrops) {
-			batch.draw(dropImage, raindrop.x, raindrop.y);
+			game.batch.draw(dropImage, raindrop.x, raindrop.y);
 		}
-		batch.end();
+		game.batch.end();
 
 	}
-
-	@Override
-	public void show() {
-		// start the playback of the background music
-		// when the screen is shown
-		rainMusic.play();
-	}
-
 
 	@Override
 	public void hide() {
@@ -223,7 +230,7 @@ public class MyStudentDrop implements Screen {
 		bucketImage.dispose();
 		dropSound.dispose();
 		rainMusic.dispose();
-		batch.dispose();
+		game.batch.dispose();
 	}
 
 	/*
