@@ -133,7 +133,7 @@ public class MyStudentDrop implements Screen {
 		game.batch.begin();
 		game.batch.draw(wallpaperRain, 0, 0);
 		game.batch.draw(bucketImage, bucket.x, bucket.y);
-		font.draw(game.batch, "Points: " + countPoints, 0, 480);
+		font.draw(game.batch, "Punts: " + countPoints, 0, 480);
 		font.draw(game.batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 625, 480);
 		game.batch.end();
 

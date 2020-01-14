@@ -71,7 +71,7 @@ public class GameOverScreen implements Screen {
         game.batch.draw(wallpaperGameOver, 0, -400);
         font.draw(game.batch, "Has perdut... ", 10, 450);
         font.draw(game.batch, "Tornar a començar?", 350, 350);
-        font.draw(game.batch, "Puntacion: " + MyStudentDrop.countPoints, 10, 300);
+        font.draw(game.batch, "Puntuació: " + MyStudentDrop.countPoints, 10, 300);
         photoGameOverRestart.draw(game.batch);
 
         /*
