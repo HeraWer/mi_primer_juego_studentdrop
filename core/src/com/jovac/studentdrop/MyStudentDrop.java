@@ -276,7 +276,7 @@ public class MyStudentDrop implements Screen {
 		raindrop.height = 64;
 		respawnGold = Math.random() * 100;
 
-		if(respawnGold < 5){
+		if(respawnGold <= 10){
 			raindropsGolden.add(raindrop);
 		}else {
 			raindrops.add(raindrop);
