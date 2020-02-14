@@ -24,7 +24,7 @@ public class MenuGame implements Screen {
     public void show() {
 
          /*
-            Ponemos una camara en el juego donde le damos un amcho y un alto
+            Ponemos una camara en el juego donde le damos un ancho y un alto
          */
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);

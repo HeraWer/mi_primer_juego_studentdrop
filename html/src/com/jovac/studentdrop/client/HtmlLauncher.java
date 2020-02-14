@@ -3,6 +3,7 @@ package com.jovac.studentdrop.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+import com.jovac.studentdrop.MainGame;
 import com.jovac.studentdrop.MyStudentDrop;
 
 public class HtmlLauncher extends GwtApplication {
@@ -46,6 +47,6 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener createApplicationListener () {
-                return new MyStudentDrop();
+                return new MainGame();
         }
 }
